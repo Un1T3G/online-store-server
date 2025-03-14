@@ -132,6 +132,18 @@ model OrderItem {
   @@map("order_item")
 }
 
+model ProductInfo{
+  id String @id @default(cuid())
+
+  title String
+  value String
+
+  product Product @relation(fields: [productId], references: [id])
+  productId String @map("product_id")
+
+  @@map("product_info")
+}
+
 model Product{
   id String @id @default(cuid())
 
@@ -139,6 +151,8 @@ model Product{
   description String
   price Int
   images String[]
+
+  attributes ProductInfo[]
 
   reviews Review[]
   orderItems OrderItem[]

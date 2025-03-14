@@ -59,4 +59,6 @@ export class UsersService {
 
     return user ? id : null;
   }
+
+  async toggleFavorite(userId: string, productId: string) {}
 }
