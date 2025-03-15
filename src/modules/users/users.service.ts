@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { UserCreateDto } from './dto/users.create.dto';
@@ -15,6 +15,10 @@ export class UsersService {
       select,
     });
 
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
     return user;
   }
 
@@ -26,6 +30,10 @@ export class UsersService {
       where: { email },
       select,
     });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
 
     return user;
   }
@@ -57,8 +65,35 @@ export class UsersService {
       },
     });
 
-    return user ? id : null;
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return user.id;
   }
 
-  async toggleFavorite(userId: string, productId: string) {}
+  async toggleFavorite(userId: string, productId: string) {
+    const user = await this.getById(userId);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const isExists = user.favorites.some((product) => product.id === productId);
+
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        favorites: {
+          [isExists ? 'disconnect' : 'connect']: {
+            id: productId,
+          },
+        },
+      },
+    });
+
+    return true;
+  }
 }

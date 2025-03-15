@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Put,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Put } from '@nestjs/common';
 import { Auth } from 'src/shared/decorators/auth.decorator';
 import { CurrentUser } from 'src/shared/decorators/user.decorator';
 import { UserUpdateAddressDto } from './dto/users.update-address';
@@ -17,13 +11,16 @@ export class UsersController {
   @Get('profile')
   @Auth('user')
   async getProfile(@CurrentUser('id') userId) {
-    const user = await this.usersService.getById(userId);
+    return this.usersService.getById(userId);
+  }
 
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
-
-    return user;
+  @Auth()
+  @Patch('profile/favorites/:productId')
+  async toggleFavorite(
+    @CurrentUser('id') userId: string,
+    @Param('productId') productId: string,
+  ) {
+    return this.usersService.toggleFavorite(userId, productId);
   }
 
   @Put('profile/address')
@@ -32,12 +29,6 @@ export class UsersController {
     @CurrentUser('id') userId,
     @Body() dto: UserUpdateAddressDto,
   ) {
-    const id = await this.usersService.updateAddress(dto, userId);
-
-    if (!id) {
-      throw new BadRequestException('User not found');
-    }
-
-    return id;
+    return this.usersService.updateAddress(dto, userId);
   }
 }

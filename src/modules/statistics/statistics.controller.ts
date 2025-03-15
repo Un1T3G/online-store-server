@@ -1,7 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { Auth } from 'src/shared/decorators/auth.decorator';
 import { StatisticsService } from './statistics.service';
 
+@Auth('admin')
 @Controller('statistics')
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
+
+  @Get('main')
+  async getMainStatistics() {
+    return this.statisticsService.getMainStatistics();
+  }
+
+  @Get('middle')
+  async getMiddleStatistics() {
+    return this.statisticsService.getMiddleStatistics();
+  }
 }

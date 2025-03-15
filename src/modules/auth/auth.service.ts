@@ -70,10 +70,6 @@ export class AuthService {
   private async validateUser(dto: AuthLoginDto) {
     const user = await this.usersService.getByEmail(dto.email);
 
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
-
     const isPasswordEqual = await verify(user.password, dto.password);
 
     if (!isPasswordEqual) {
