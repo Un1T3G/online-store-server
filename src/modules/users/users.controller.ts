@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Patch, Put } from '@nestjs/common';
 import { Auth } from 'src/shared/decorators/auth.decorator';
 import { CurrentUser } from 'src/shared/decorators/user.decorator';
 import { UserUpdateAddressDto } from './dto/users.update-address';
+import { UserUpdateProfileDto } from './dto/users.update-profile';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -21,6 +22,15 @@ export class UsersController {
     @Param('productId') productId: string,
   ) {
     return this.usersService.toggleFavorite(userId, productId);
+  }
+
+  @Put('profile')
+  @Auth('user')
+  async updateProfile(
+    @CurrentUser('id') userId,
+    @Body() dto: UserUpdateProfileDto,
+  ) {
+    return this.usersService.updateProfile(dto, userId);
   }
 
   @Put('profile/address')

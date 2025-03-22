@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { UserCreateDto } from './dto/users.create.dto';
 import { UserUpdateAddressDto } from './dto/users.update-address';
+import { UserUpdateProfileDto } from './dto/users.update-profile';
 import { returnUserObject } from './return.user-object.select';
 
 @Injectable()
@@ -49,6 +50,19 @@ export class UsersService {
     });
 
     return user;
+  }
+
+  async updateProfile(dto: UserUpdateProfileDto, id: string) {
+    const user = await this.prismaService.user.update({
+      where: { id },
+      data: dto,
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    return user.id;
   }
 
   async updateAddress(dto: UserUpdateAddressDto, id: string) {

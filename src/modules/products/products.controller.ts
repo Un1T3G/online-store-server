@@ -39,8 +39,8 @@ export class ProductsController {
   }
 
   @Get('most-popular')
-  async getMostPopular() {
-    return this.productsService.getMostPopular();
+  async getMostPopular(@Query() query?: PaginatorQuery) {
+    return this.productsService.getMostPopular(query);
   }
 
   @Get('similar/:id')

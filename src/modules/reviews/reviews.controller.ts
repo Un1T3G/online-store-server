@@ -26,6 +26,14 @@ export class ReviewsController {
     return this.reviewsService.getAll(query);
   }
 
+  @Get('by-product/:productId')
+  async getByProductId(
+    @Param('productId') productId: string,
+    @Query() query?: PaginatorQuery,
+  ) {
+    return this.reviewsService.getByProductId(productId, query);
+  }
+
   @Auth()
   @Post(':productId/')
   @UsePipes(new ValidationPipe())
