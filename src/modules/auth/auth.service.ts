@@ -33,11 +33,13 @@ export class AuthService {
   }
 
   async register(dto: UserCreateDto) {
-    const oldUser = await this.usersService.getByEmail(dto.email);
+    try {
+      const oldUser = await this.usersService.getByEmail(dto.email);
 
-    if (oldUser) {
-      throw new BadRequestException('User already exists');
-    }
+      if (oldUser) {
+        throw new BadRequestException('User already exists');
+      }
+    } catch (error) {}
 
     const hashedPassword = await hash(dto.password!);
 
