@@ -27,11 +27,8 @@ export class ReviewsController {
   }
 
   @Get('by-product/:productId')
-  async getByProductId(
-    @Param('productId') productId: string,
-    @Query() query?: PaginatorQuery,
-  ) {
-    return this.reviewsService.getByProductId(productId, query);
+  async getByProductId(@Param('productId') productId: string) {
+    return this.reviewsService.getByProductId(productId);
   }
 
   @Auth()

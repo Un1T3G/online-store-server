@@ -10,11 +10,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { GoogleAuthGuard } from 'src/shared/guards/auth-google.guard';
 import { UserCreateDto } from '../users/dto/users.create.dto';
 import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth.login.dto';
 import { AuthRefreshTokenDto } from './dto/auth.refresh-token.dto';
+import { GoogleAuthGuard } from '../../shared/guards/auth-google.guard';
 
 @Controller('auth')
 export class AuthController {

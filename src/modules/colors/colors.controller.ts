@@ -11,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Auth } from 'src/shared/decorators/auth.decorator';
-import { PaginatorQuery } from 'src/shared/types/paginator.query.type';
+import { PaginatorWithSearchTermQuery } from 'src/shared/types/paginator-with-search-term.query.type';
 import { ColorsService } from './colors.service';
 import { ColorCreateDto } from './dto/colors.create.dto';
 import { ColorUpdateDto } from './dto/colors.update.dto';
@@ -20,9 +20,8 @@ import { ColorUpdateDto } from './dto/colors.update.dto';
 export class ColorsController {
   constructor(private readonly colorsService: ColorsService) {}
 
-  @Auth('admin')
   @Get()
-  async getAll(@Query() query?: PaginatorQuery) {
+  async getAll(@Query() query?: PaginatorWithSearchTermQuery) {
     return this.colorsService.getAll(query);
   }
 

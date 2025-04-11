@@ -14,6 +14,7 @@ import { ProductCreateDto } from './dto/product.create.dto';
 import { ProductUpdateDto } from './dto/product.update.dto';
 import { ProductsService } from './products.service';
 
+import { CurrentUser } from 'src/shared/decorators/user.decorator';
 import { PaginatorWithSearchTermQuery } from 'src/shared/types/paginator-with-search-term.query.type';
 
 @Controller('products')
@@ -33,9 +34,18 @@ export class ProductsController {
   @Get('by-category/:categoryId')
   async getByCategory(
     @Param('categoryId') categoryId: string,
-    query?: PaginatorQuery,
+    @Query() query?: PaginatorQuery,
   ) {
     return this.productsService.getByCategory(categoryId, query);
+  }
+
+  @Auth('user')
+  @Get('favorites')
+  async getFavorites(
+    @CurrentUser('id') userId: string,
+    @Query() query?: PaginatorQuery,
+  ) {
+    return this.productsService.getFavorites(userId, query);
   }
 
   @Get('most-popular')

@@ -30,6 +30,19 @@ export class OrdersService {
     return orders;
   }
 
+  async getByUserId(userId: string) {
+    const orders = await this.prismaService.order.findMany({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+      select: returnOrderObject,
+    });
+
+    return orders;
+  }
+
   async createPayment(dto: OrderCreateDto, userId: string) {
     const orderItems = dto.items.map((item) => ({
       quantity: item.quantity,
@@ -63,7 +76,7 @@ export class OrdersService {
     const payment = await checkout.createPayment({
       amount: {
         value: total.toFixed(2),
-        currency: 'RUB',
+        currency: 'UZS',
       },
       payment_method_data: {
         type: 'bank_card',
@@ -72,7 +85,7 @@ export class OrdersService {
         type: 'redirect',
         return_url: `${process.env.CLIENT_URL}/thanks`,
       },
-      description: `Оплата заказа в магазине TeaShop. Id платежи: #${order.id}`,
+      description: `Оплата заказа в магазине Fake-Store. Id платежи: #${order.id}`,
     });
 
     return payment;

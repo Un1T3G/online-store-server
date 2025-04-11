@@ -1,5 +1,6 @@
 import {
   Controller,
+  HttpCode,
   Post,
   Query,
   UploadedFiles,
@@ -15,6 +16,7 @@ export class FilesController {
 
   @Auth()
   @Post()
+  @HttpCode(200)
   @UseInterceptors(FilesInterceptor('files'))
   async saveFiles(
     @UploadedFiles() files: Express.Multer.File[],

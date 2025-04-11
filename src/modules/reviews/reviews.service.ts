@@ -22,10 +22,8 @@ export class ReviewsService {
     return reviews;
   }
 
-  async getByProductId(productId: string, query?: PaginatorQuery) {
-    const pagination = paginator({ page: query.page, perPage: query.perPage });
-
-    const reviews = pagination(this.prismaService.review, {
+  async getByProductId(productId: string) {
+    const reviews = this.prismaService.review.findMany({
       where: {
         product: {
           id: productId,

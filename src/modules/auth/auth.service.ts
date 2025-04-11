@@ -51,9 +51,11 @@ export class AuthService {
   }
 
   async authByGoogle(req: any) {
-    let user = await this.usersService.getByEmail(req.user.email);
+    let user;
 
-    if (!user) {
+    try {
+      user = await this.usersService.getByEmail(req.user.email);
+    } catch (e) {
       const dto: UserCreateDto = {
         name: req.user.name,
         email: req.user.email,

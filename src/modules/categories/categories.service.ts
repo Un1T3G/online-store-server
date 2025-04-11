@@ -16,8 +16,8 @@ export class CategoriesService {
 
     const categories = pagination(this.prismaService.category, {
       where: {
-        name: {
-          contains: query.searchTerm,
+        title: {
+          contains: query.searchTerm || '',
           mode: 'insensitive',
         },
       },

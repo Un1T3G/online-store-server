@@ -143,11 +143,14 @@ export class StatisticsService {
     });
 
     return lastUsers.map((user) => {
-      const lastOrder = user.orders[user.orders.length - 1];
+      let total = 0;
 
-      const total = lastOrder.items.reduce((total, item) => {
-        return total + item.price;
-      }, 0);
+      if (user.orders.length > 0) {
+        const lastOrder = user.orders[user.orders.length - 1];
+        total = lastOrder.items.reduce((total, item) => {
+          return total + item.price;
+        }, 0);
+      }
 
       return {
         id: user.id,

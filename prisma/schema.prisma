@@ -88,7 +88,7 @@ model Review {
   user User? @relation(fields: [userId], references: [id])
   userId String? @map("user_id")
 
-  product Product? @relation(fields: [productId], references: [id])
+  product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String? @map("product_id")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -123,7 +123,7 @@ model OrderItem {
   order Order? @relation(fields: [orderId], references: [id])
   orderId String? @map("order_id")
 
-  product Product? @relation(fields: [productId], references: [id])
+  product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String?  @map("product_id")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -138,7 +138,7 @@ model ProductInfo{
   title String
   value String
 
-  product Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String @map("product_id")
 
   @@map("product_info")
@@ -152,10 +152,10 @@ model Product{
   price Int
   images String[]
 
-  attributes ProductInfo[]
+  attributes ProductInfo[] 
 
-  reviews Review[]
-  orderItems OrderItem[]
+  reviews Review[] 
+  orderItems OrderItem[] 
 
   category Category? @relation(fields: [categoryId], references: [id])
   categoryId String? @map("category_id")

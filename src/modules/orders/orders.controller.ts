@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Query,
   UsePipes,
@@ -18,8 +19,15 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Auth('admin')
+  @Get()
   async getAll(@Query() query: PaginatorQuery) {
     return this.ordersService.getAll(query);
+  }
+
+  @Auth('user')
+  @Get('by-user')
+  async getByUserId(@CurrentUser('id') userId: string) {
+    return this.ordersService.getByUserId(userId);
   }
 
   @Post('place')

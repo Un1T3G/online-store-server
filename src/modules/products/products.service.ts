@@ -16,7 +16,7 @@ export class ProductsService {
 
     const products = pagination(this.prismaService.product, {
       where: {
-        name: {
+        title: {
           contains: query.searchTerm,
           mode: 'insensitive',
         },
@@ -33,6 +33,7 @@ export class ProductsService {
   async getById(id: string) {
     const product = await this.prismaService.product.findUnique({
       where: { id },
+      select: returnProductObject,
     });
 
     if (!product) {
@@ -107,6 +108,24 @@ export class ProductsService {
     return products;
   }
 
+  async getFavorites(userId: string, query?: PaginatorQuery) {
+    const pagination = paginator({ page: query.page, perPage: query.perPage });
+
+    const products = pagination(this.prismaService.product, {
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: returnProductObject,
+    });
+
+    return products;
+  }
+
   async create(dto: ProductCreateDto) {
     const product = await this.prismaService.product.create({
       data: {
@@ -148,6 +167,6 @@ export class ProductsService {
       throw new BadRequestException('Product not found');
     }
 
-    return product.id;
+    return productId;
   }
 }
