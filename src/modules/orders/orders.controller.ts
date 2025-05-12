@@ -37,6 +37,7 @@ export class OrdersController {
     @Body() dto: OrderCreateDto,
     @CurrentUser('id') userId: string,
   ) {
+    console.log(dto);
     return this.ordersService.createPayment(dto, userId);
   }
 

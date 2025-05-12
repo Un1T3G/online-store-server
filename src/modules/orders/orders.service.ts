@@ -60,7 +60,7 @@ export class OrdersService {
 
     const order = await this.prismaService.order.create({
       data: {
-        status: dto.status,
+        status: EnumOrderStatus.PENDING,
         items: {
           create: orderItems,
         },
@@ -76,7 +76,7 @@ export class OrdersService {
     const payment = await checkout.createPayment({
       amount: {
         value: total.toFixed(2),
-        currency: 'UZS',
+        currency: 'RUB',
       },
       payment_method_data: {
         type: 'bank_card',

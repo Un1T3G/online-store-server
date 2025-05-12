@@ -12,7 +12,7 @@ import {
 export class OrderCreateDto {
   @IsOptional()
   @IsEnum(EnumOrderStatus)
-  status: EnumOrderStatus;
+  status?: EnumOrderStatus;
 
   @IsArray()
   @ValidateNested({ each: true })
