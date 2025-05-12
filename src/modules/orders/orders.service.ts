@@ -1,16 +1,16 @@
-import { ICapturePayment, YooCheckout } from '@a2seven/yoo-checkout';
 import { Injectable } from '@nestjs/common';
 import { EnumOrderStatus } from '@prisma/client';
 import { PrismaService } from 'src/core/prisma/prisma.service';
 import { PaginatorQuery } from 'src/shared/types/paginator.query.type';
 import { paginator } from 'src/shared/utils/paginator.util';
+import * as YooKassa from 'yookassa';
 import { OrderCreateDto } from './dto/order.create.dto';
 import { PaymentStatusDto } from './dto/payment-status.dto';
 import { returnOrderObject } from './return.order-object.select';
 
-const checkout = new YooCheckout({
-  shopId: process.env['YOOKASSA_SHOP_ID'],
-  secretKey: process.env['YOOKASSA_SECRET_KEY'],
+const yooKassa = new YooKassa({
+  shopId: process.env['SHOP_ID'],
+  secretKey: process.env['PAYMENT_TOKEN'],
 });
 
 @Injectable()
@@ -73,7 +73,7 @@ export class OrdersService {
       },
     });
 
-    const payment = await checkout.createPayment({
+    const payment = await yooKassa.createPayment({
       amount: {
         value: total.toFixed(2),
         currency: 'RUB',
@@ -93,18 +93,13 @@ export class OrdersService {
 
   async updateStatus(dto: PaymentStatusDto) {
     if (dto.event === 'payment.waiting_for_capture') {
-      const capturePayment: ICapturePayment = {
-        amount: {
-          value: dto.object.amount.value,
-          currency: dto.object.amount.currency,
-        },
-      };
-
-      return checkout.capturePayment(dto.object.id, capturePayment);
+      const payment = await yooKassa.capturePayment(dto.object.id);
+      return payment;
     }
 
     if (dto.event === 'payment.succeeded') {
-      const orderId = dto.object.description.split('#')[1];
+      const descriptionParts = dto.object.description.split(', ');
+      const orderId = descriptionParts[0].split('#')[1];
 
       await this.prismaService.order.update({
         where: {
