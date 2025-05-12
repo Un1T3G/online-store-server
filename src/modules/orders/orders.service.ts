@@ -9,8 +9,8 @@ import { PaymentStatusDto } from './dto/payment-status.dto';
 import { returnOrderObject } from './return.order-object.select';
 
 const yooKassa = new YooKassa({
-  shopId: process.env['SHOP_ID'],
-  secretKey: process.env['PAYMENT_TOKEN'],
+  shopId: process.env['YOOKASSA_SHOP_ID'],
+  secretKey: process.env['YOOKASSA_SECRET_KEY'],
 });
 
 @Injectable()
@@ -75,7 +75,7 @@ export class OrdersService {
 
     const payment = await yooKassa.createPayment({
       amount: {
-        value: total.toFixed(2),
+        value: (total / 158.86).toFixed(2),
         currency: 'RUB',
       },
       payment_method_data: {
@@ -83,10 +83,12 @@ export class OrdersService {
       },
       confirmation: {
         type: 'redirect',
-        return_url: `${process.env.CLIENT_URL}/thanks`,
+        return_url: `${process.env['CLIENT_URL']}/thanks`,
       },
       description: `Оплата заказа в магазине Fake-Store. Id платежи: #${order.id}`,
     });
+
+    console.log(payment);
 
     return payment;
   }
