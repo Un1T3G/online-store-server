@@ -73,9 +73,11 @@ export class OrdersService {
       },
     });
 
+    const rubToSumCurrency = 158.86;
+
     const payment = await yooKassa.createPayment({
       amount: {
-        value: (total / 158.86).toFixed(2),
+        value: (total / rubToSumCurrency).toFixed(2),
         currency: 'RUB',
       },
       payment_method_data: {
