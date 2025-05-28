@@ -143,7 +143,12 @@ export class ProductsService {
     const product = await this.prismaService.product.update({
       where: { id: productId },
       data: {
-        ...dto,
+        title: dto.title,
+        description: dto.description,
+        price: dto.price,
+        images: dto.images,
+        categoryId: dto.categoryId,
+        colorId: dto.colorId,
         attributes: {
           deleteMany: {},
           create: dto.attributes,
