@@ -72,7 +72,10 @@ export class AuthService {
   }
 
   private async validateUser(dto: AuthLoginDto) {
-    const user = await this.usersService.getByEmail(dto.email);
+    const user = await this.usersService.getByEmail(dto.email, {
+      id: true,
+      password: true,
+    });
 
     const isPasswordEqual = await verify(user.password, dto.password);
 
