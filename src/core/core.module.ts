@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ChatbotModule } from 'src/modules/chatbot/chatbot.module';
+import { AIbotModule } from 'src/modules/ai-bot/ai-bot.module';
 import { OrdersModule } from 'src/modules/orders/orders.module';
 import { AuthModule } from '../modules/auth/auth.module';
 import { CategoriesModule } from '../modules/categories/categories.module';
@@ -27,7 +27,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ProductsModule,
     OrdersModule,
     StatisticsModule,
-    ChatbotModule,
+    AIbotModule,
   ],
 })
 export class CoreModule {}

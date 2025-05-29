@@ -2,10 +2,10 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/core/prisma/prisma.service';
-import { ChatbotDto } from './dto/chatbot.dto';
+import { AIbotDto } from './dto/ai-bot.dto';
 
 @Injectable()
-export class ChatbotService {
+export class AIbotService {
   private readonly genAI: GoogleGenerativeAI;
   private readonly model: any;
 
@@ -46,7 +46,7 @@ export class ChatbotService {
     return products;
   }
 
-  async generateResponse(dto: ChatbotDto) {
+  async generateResponse(dto: AIbotDto) {
     const products = await this.getAllProducts();
 
     try {
@@ -95,6 +95,36 @@ export class ChatbotService {
       Если нет подходящих товаров, верни JSON с пустым массивом: { "title": "Ничего не найдено", "products": [] }
       
       Ответ должен быть ТОЛЬКО в этом JSON-формате.
+      `;
+
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response;
+      const text = response.text();
+
+      const cleaned = text.replace(/```json|```/g, '').trim();
+
+      return JSON.parse(cleaned);
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+  }
+
+  async generateProductAttributes(dto: AIbotDto) {
+    try {
+      const prompt = `
+      Сгенерируй JSON-массив с атрибутами товара для интернет-магазина.
+      Каждый атрибут должен иметь формат: { "title": "...", "value": "..." }.
+      Описание товара: "${dto.message}".
+      
+      Пример:
+      [
+        { "title": "Процессор", "value": "Intel Core i5 12-го поколения" },
+        ...
+      ]
+      
+      Сгенерируй 7–15 реалистичных и уникальных атрибутов.
+      Ответь только в формате JSON.
       `;
 
       const result = await this.model.generateContent(prompt);
