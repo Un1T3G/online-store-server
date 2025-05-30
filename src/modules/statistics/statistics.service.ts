@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EnumOrderStatus } from '@prisma/client';
 import * as dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { PrismaService } from 'src/core/prisma/prisma.service';
@@ -50,6 +51,9 @@ export class StatisticsService {
 
   private async calculateTotalRevenue() {
     const orders = await this.prismaService.order.findMany({
+      where: {
+        status: EnumOrderStatus.PAYED,
+      },
       include: {
         items: true,
       },
@@ -147,9 +151,12 @@ export class StatisticsService {
 
       if (user.orders.length > 0) {
         const lastOrder = user.orders[user.orders.length - 1];
-        total = lastOrder.items.reduce((total, item) => {
-          return total + item.price;
-        }, 0);
+
+        if (lastOrder.status === EnumOrderStatus.PAYED) {
+          total = lastOrder.items.reduce((total, item) => {
+            return total + item.price;
+          }, 0);
+        }
       }
 
       return {
