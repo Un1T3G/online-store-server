@@ -43,7 +43,7 @@ export class UsersService {
     const user = await this.prismaService.user.create({
       data: {
         ...dto,
-        avatarUrl: dto.avatarUrl || '/avatars/default.png',
+        avatarUrl: dto.avatarUrl || '/avatar/default.png',
         authByOAuth,
       },
       select: returnUserObject,
