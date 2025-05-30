@@ -4,6 +4,7 @@ import { PrismaService } from 'src/core/prisma/prisma.service';
 import { PaginatorQuery } from 'src/shared/types/paginator.query.type';
 import { paginator } from 'src/shared/utils/paginator.util';
 import * as YooKassa from 'yookassa';
+import { returnUserObject } from '../users/return.user-object.select';
 import { OrderCreateDto } from './dto/order.create.dto';
 import { PaymentStatusDto } from './dto/payment-status.dto';
 import { returnOrderObject } from './return.order-object.select';
@@ -24,7 +25,10 @@ export class OrdersService {
       orderBy: {
         createdAt: 'desc',
       },
-      select: returnOrderObject,
+      select: {
+        ...returnOrderObject,
+        user: returnUserObject,
+      },
     });
 
     return orders;
