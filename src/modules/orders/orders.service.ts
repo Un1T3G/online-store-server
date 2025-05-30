@@ -27,7 +27,9 @@ export class OrdersService {
       },
       select: {
         ...returnOrderObject,
-        user: returnUserObject,
+        user: {
+          select: returnUserObject,
+        },
       },
     });
 
@@ -93,8 +95,6 @@ export class OrdersService {
       },
       description: `Оплата заказа в магазине Fake-Store. Id платежи: #${order.id}`,
     });
-
-    console.log(payment);
 
     return payment;
   }
