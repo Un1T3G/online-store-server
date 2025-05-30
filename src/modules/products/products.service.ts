@@ -99,6 +99,14 @@ export class ProductsService {
     const pagination = paginator({ page: query.page, perPage: query.perPage });
 
     const products = pagination(this.prismaService.product, {
+      where: {
+        category: {
+          id: product.categoryId,
+        },
+        id: {
+          not: productId,
+        },
+      },
       orderBy: {
         createdAt: 'desc',
       },
