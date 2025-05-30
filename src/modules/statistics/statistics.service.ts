@@ -154,21 +154,23 @@ export class StatisticsService {
       },
     });
 
-    return users.map((user) => {
-      const total = user.orders.reduce((orderAcc, order) => {
-        const orderTotal = order.items.reduce((itemAcc, item) => {
-          return itemAcc + item.price * item.quantity;
+    return users
+      .map((user) => {
+        const total = user.orders.reduce((orderAcc, order) => {
+          const orderTotal = order.items.reduce((itemAcc, item) => {
+            return itemAcc + item.price * item.quantity;
+          }, 0);
+          return orderAcc + orderTotal;
         }, 0);
-        return orderAcc + orderTotal;
-      }, 0);
 
-      return {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatarUrl: user.avatarUrl,
-        total,
-      };
-    });
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+          total,
+        };
+      })
+      .sort((a, b) => b.total - a.total);
   }
 }
