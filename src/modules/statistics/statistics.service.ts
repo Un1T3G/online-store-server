@@ -44,7 +44,7 @@ export class StatisticsService {
   async getMiddleStatistics() {
     const monthlySales = await this.calculateMonthlySales();
 
-    const lastUsers = await this.getLastUsers();
+    const lastUsers = await this.getTopBuyersUser();
 
     return { monthlySales, lastUsers };
   }
@@ -131,33 +131,36 @@ export class StatisticsService {
     return monthlySales;
   }
 
-  private async getLastUsers() {
-    const lastUsers = await this.prismaService.user.findMany({
-      orderBy: { createdAt: 'desc' },
+  private async getTopBuyersUser() {
+    const users = await this.prismaService.user.findMany({
       take: 5,
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         orders: {
+          where: {
+            status: EnumOrderStatus.PAYED,
+          },
           include: {
             items: {
-              select: { price: true },
+              select: {
+                price: true,
+                quantity: true,
+              },
             },
           },
         },
       },
     });
 
-    return lastUsers.map((user) => {
-      let total = 0;
-
-      if (user.orders.length > 0) {
-        const lastOrder = user.orders[user.orders.length - 1];
-
-        if (lastOrder.status === EnumOrderStatus.PAYED) {
-          total = lastOrder.items.reduce((total, item) => {
-            return total + item.price;
-          }, 0);
-        }
-      }
+    return users.map((user) => {
+      const total = user.orders.reduce((orderAcc, order) => {
+        const orderTotal = order.items.reduce((itemAcc, item) => {
+          return itemAcc + item.price * item.quantity;
+        }, 0);
+        return orderAcc + orderTotal;
+      }, 0);
 
       return {
         id: user.id,
