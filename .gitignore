@@ -2,7 +2,8 @@
 /dist
 /node_modules
 /build
-/uploads/product
+/uploads/
+!/uploads/avatar/default.png
 
 # Logs
 logs

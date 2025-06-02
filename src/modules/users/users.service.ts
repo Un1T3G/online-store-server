@@ -55,7 +55,10 @@ export class UsersService {
   async updateProfile(dto: UserUpdateProfileDto, id: string) {
     const user = await this.prismaService.user.update({
       where: { id },
-      data: dto,
+      data: {
+        name: dto.name,
+        avatarUrl: dto.avatarUrl,
+      },
     });
 
     if (!user) {
